@@ -1,10 +1,16 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
+import { ChatCompletionSystemMessageParam } from "openai/resources/index.mjs";
 
 const openai = new OpenAI({
   apiKey: process.env.OPEN_AI_KEY,
 });
+const instructionMessage: ChatCompletionSystemMessageParam = {
+  role: "system",
+  content:
+    "You are a code generator. You must answer in markdown code snippets. Use code comments to explain code snippets.",
+};
 
 export async function POST(req: Request) {
   try {
@@ -23,11 +29,12 @@ export async function POST(req: Request) {
     }
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
-      messages,
+      messages: [instructionMessage, ...messages],
     });
+    console.log("Response", response);
     return NextResponse.json(response.choices[0].message, { status: 200 });
   } catch (error) {
-    console.log("[Conversation Error]", error);
+    console.log("[Code Error]", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
