@@ -89,11 +89,7 @@ const Conversation = () => {
           </form>
         </Form>
         <div className="mt-4">
-          {isLoading && (
-            <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted">
-              <Loader />
-            </div>
-          )}
+          {isLoading && <Loader />}
           {messages.length === 0 && !isLoading && (
             <Empty label="No conversation." />
           )}
