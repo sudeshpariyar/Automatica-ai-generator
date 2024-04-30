@@ -1,24 +1,23 @@
 "use client";
-import Heading from "@/components/Heading";
-import { Code } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import * as z from "zod";
+import axios from "axios";
+import { Code } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useForm } from "react-hook-form";
 import { formSchema } from "./constants";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
-import Empty from "@/components/empty";
 import Loader from "@/components/loader";
-import { cn } from "@/lib/utils";
+import Empty from "@/components/empty";
 import UserAvatar from "@/components/userAvatar";
 import BotAvatar from "@/components/botAvatar";
 import ReactMarkdown from "react-markdown";
-import { Autour_One } from "next/font/google";
+import Heading from "@/components/Heading";
 
 const CodePage = () => {
   const router = useRouter();
@@ -41,7 +40,6 @@ const CodePage = () => {
       const response = await axios.post("/api/code", {
         messages: newMessages,
       });
-      console.log("THis is data", response.data);
       setMessages((current) => [...current, userMessage, response.data]);
       form.reset();
     } catch (error) {

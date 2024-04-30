@@ -1,19 +1,18 @@
 "use client";
-import Heading from "@/components/Heading";
-import { MessageSquare, MusicIcon } from "lucide-react";
+import { useState } from "react";
+import axios from "axios";
+import * as z from "zod";
+import { MusicIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { formSchema } from "./constants";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import Heading from "@/components/Heading";
 import Empty from "@/components/empty";
 import Loader from "@/components/loader";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 
 const MusicPage = () => {
   const router = useRouter();
@@ -30,7 +29,6 @@ const MusicPage = () => {
     try {
       setMusic(undefined);
       const response = await axios.post("/api/music", values);
-      console.log("this is response", response);
       setMusic(response.data);
       form.reset();
     } catch (error) {

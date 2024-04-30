@@ -2,25 +2,21 @@
 import { useState } from "react";
 import axios from "axios";
 import * as z from "zod";
+import { VideoIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { MessageSquare } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { cn } from "@/lib/utils";
 import { formSchema } from "./constants";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
-import Empty from "@/components/empty";
 import Loader from "@/components/loader";
+import Empty from "@/components/empty";
 import Heading from "@/components/Heading";
-import UserAvatar from "@/components/userAvatar";
-import BotAvatar from "@/components/botAvatar";
 
-const Conversation = () => {
+const VideoPage = () => {
   const router = useRouter();
-  const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
+  const [video, setVideo] = useState<string>();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -31,15 +27,9 @@ const Conversation = () => {
   const isLoading = form.formState.isSubmitting;
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const userMessage: ChatCompletionMessageParam = {
-        role: "user",
-        content: values.prompt,
-      };
-      const newMessages = [...messages, userMessage];
-      const response = await axios.post("/api/conversation", {
-        messages: newMessages,
-      });
-      setMessages((current) => [...current, userMessage, response.data]);
+      setVideo(undefined);
+      const response = await axios.post("/api/video", values);
+      setVideo(response.data[0]);
       form.reset();
     } catch (error) {
       //for pro model
@@ -51,11 +41,11 @@ const Conversation = () => {
   return (
     <div>
       <Heading
-        title="Conversation"
-        description="AI tool for the conversation"
-        icon={MessageSquare}
-        iconColor="text-violet-500"
-        bgColor="bg-violet-500/10"
+        title="Video Generation"
+        description="AI tool for video generation"
+        icon={VideoIcon}
+        iconColor="text-orange-300"
+        bgColor="bg-orange-300/10"
       />
       <div className="px-4 lg:px-8">
         <Form {...form}>
@@ -71,7 +61,7 @@ const Conversation = () => {
                     <Input
                       className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                       disabled={isLoading}
-                      placeholder="Ask your question...."
+                      placeholder="Minions Dancing on the road"
                       {...field}
                     />
                   </FormControl>
@@ -89,29 +79,19 @@ const Conversation = () => {
         </Form>
         <div className="mt-4">
           {isLoading && <Loader />}
-          {messages.length === 0 && !isLoading && (
-            <Empty label="No conversation." />
+          {!video && !isLoading && <Empty label="No Video Generated." />}
+          {video && (
+            <video
+              controls
+              className="w-full mt-8 aspect-video rounded-lg border bg-black"
+            >
+              <source src={video} />
+            </video>
           )}
-          <div className="flex flex-col-reverse gap-y-4">
-            {messages.map((message) => (
-              <div
-                key={String(message.content)}
-                className={cn(
-                  "p-8 w-full flex items-start gap-x-8 rounded-lg",
-                  message.role === "user"
-                    ? "bg-white border border-black/10"
-                    : "bg-muted"
-                )}
-              >
-                {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
-                <p className="text-sm"> {String(message.content)}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default Conversation;
+export default VideoPage;
