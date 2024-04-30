@@ -1,18 +1,20 @@
 "use client";
-import Heading from "@/components/Heading";
-import { Download, ImageIcon } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import axios from "axios";
 import * as z from "zod";
+import { useForm } from "react-hook-form";
+import { Download, ImageIcon } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { amountOptions, formSchema, resolutiOnptions } from "./constants";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Card, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import Empty from "@/components/empty";
+import Heading from "@/components/Heading";
 import Loader from "@/components/loader";
-import { useState } from "react";
+import Image from "next/image";
 import {
   Select,
   SelectContent,
@@ -20,8 +22,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardFooter } from "@/components/ui/card";
-import Image from "next/image";
 
 const ImageGenerationPage = () => {
   const router = useRouter();
@@ -42,7 +42,6 @@ const ImageGenerationPage = () => {
       setImages([]);
       const response = await axios.post("/api/image", values);
       const urls = response.data.map((image: { url: string }) => image.url);
-      console.log("responseURLS", urls);
       setImages(urls);
       form.reset();
     } catch (error) {

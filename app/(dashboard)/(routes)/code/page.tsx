@@ -18,7 +18,6 @@ import { cn } from "@/lib/utils";
 import UserAvatar from "@/components/userAvatar";
 import BotAvatar from "@/components/botAvatar";
 import ReactMarkdown from "react-markdown";
-import { Autour_One } from "next/font/google";
 
 const CodePage = () => {
   const router = useRouter();
@@ -41,7 +40,6 @@ const CodePage = () => {
       const response = await axios.post("/api/code", {
         messages: newMessages,
       });
-      console.log("THis is data", response.data);
       setMessages((current) => [...current, userMessage, response.data]);
       form.reset();
     } catch (error) {

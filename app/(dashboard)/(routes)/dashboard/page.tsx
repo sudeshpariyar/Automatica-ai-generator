@@ -1,7 +1,7 @@
 "use client";
-
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   Code,
@@ -11,7 +11,6 @@ import {
   Settings,
   VideoIcon,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 const tools = [
   {

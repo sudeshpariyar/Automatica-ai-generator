@@ -31,7 +31,6 @@ export async function POST(req: Request) {
       model: "gpt-3.5-turbo",
       messages: [instructionMessage, ...messages],
     });
-    console.log("Response", response);
     return NextResponse.json(response.choices[0].message, { status: 200 });
   } catch (error) {
     console.log("[Code Error]", error);
