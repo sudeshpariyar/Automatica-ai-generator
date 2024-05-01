@@ -11,7 +11,7 @@ const layout = async ({ children }: { children: ReactNode }) => {
         <Sidebar apiLimitCount={apiLimit} />
       </div>
       <main className="md:pl-72">
-        <Navbar />
+        <Navbar apiLimitCount={apiLimit} />
         {children}
       </main>
     </div>
