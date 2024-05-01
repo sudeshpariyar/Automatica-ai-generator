@@ -1,3 +1,4 @@
+import { checkApiLimit, increaseApiLimit } from "@/lib/api-limit";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import Replicate from "replicate";
@@ -26,10 +27,18 @@ export async function POST(req: Request) {
       normalization_strategy: "peak",
     };
 
+    //checks for the free trial limit
+    const freeTrial = await checkApiLimit();
+    if (!freeTrial) {
+      return new NextResponse("Api Limit exceeded", { status: 403 });
+    }
+
     const response = await replicate.run(
       "meta/musicgen:671ac645ce5e552cc63a54a2bbff63fcf798043055d2dac5fc9e36a837eedcfb",
       { input }
     );
+    //increment the free trial
+    await increaseApiLimit();
     return NextResponse.json(response, { status: 200 });
   } catch (error) {
     console.log("[Music Error]", error);
