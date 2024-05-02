@@ -17,8 +17,10 @@ import Loader from "@/components/loader";
 import Heading from "@/components/Heading";
 import UserAvatar from "@/components/userAvatar";
 import BotAvatar from "@/components/botAvatar";
+import { useProModal } from "@/hooks/useProModal";
 
 const Conversation = () => {
+  const proModal = useProModal();
   const router = useRouter();
   const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -41,9 +43,10 @@ const Conversation = () => {
       });
       setMessages((current) => [...current, userMessage, response.data]);
       form.reset();
-    } catch (error) {
-      //for pro model
-      console.log(error);
+    } catch (error: any) {
+      if (error?.response?.status === 403) {
+        proModal.onOpen();
+      }
     } finally {
       router.refresh();
     }

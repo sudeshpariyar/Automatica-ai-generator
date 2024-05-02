@@ -18,9 +18,12 @@ import UserAvatar from "@/components/userAvatar";
 import BotAvatar from "@/components/botAvatar";
 import ReactMarkdown from "react-markdown";
 import Heading from "@/components/Heading";
+import { useProModal } from "@/hooks/useProModal";
 
 const CodePage = () => {
   const router = useRouter();
+  const proModal = useProModal();
+
   const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -42,9 +45,10 @@ const CodePage = () => {
       });
       setMessages((current) => [...current, userMessage, response.data]);
       form.reset();
-    } catch (error) {
-      //for pro model
-      console.log(error);
+    } catch (error: any) {
+      if (error?.response?.status === 403) {
+        proModal.onOpen();
+      }
     } finally {
       router.refresh();
     }

@@ -5,6 +5,7 @@ import { MAX_FREE_REQUEST } from "@/constant";
 import { Progress } from "./ui/progress";
 import { Button } from "./ui/button";
 import { Zap } from "lucide-react";
+import { useProModal } from "@/hooks/useProModal";
 
 interface ApiLimitCounterProps {
   apiLimitCount: number;
@@ -12,6 +13,7 @@ interface ApiLimitCounterProps {
 
 const ApiLimitCounter = ({ apiLimitCount = 0 }: ApiLimitCounterProps) => {
   const [mounted, setMounted] = useState(false);
+  const proModal = useProModal();
 
   useEffect(() => {
     setMounted(true);
@@ -33,7 +35,11 @@ const ApiLimitCounter = ({ apiLimitCount = 0 }: ApiLimitCounterProps) => {
               value={(apiLimitCount / MAX_FREE_REQUEST) * 100}
             />
           </div>
-          <Button className="w-full text-white" variant="pro">
+          <Button
+            onClick={proModal.onOpen}
+            className="w-full text-white"
+            variant="pro"
+          >
             Upgrade to Pro <Zap className="w-4 h-4 ml-2 fill-white" />
           </Button>
         </CardContent>
