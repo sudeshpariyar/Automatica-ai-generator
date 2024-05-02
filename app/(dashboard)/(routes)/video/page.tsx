@@ -13,9 +13,12 @@ import { useRouter } from "next/navigation";
 import Loader from "@/components/loader";
 import Empty from "@/components/empty";
 import Heading from "@/components/Heading";
+import { useProModal } from "@/hooks/useProModal";
 
 const VideoPage = () => {
   const router = useRouter();
+  const proModal = useProModal();
+
   const [video, setVideo] = useState<string>();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -31,9 +34,10 @@ const VideoPage = () => {
       const response = await axios.post("/api/video", values);
       setVideo(response.data[0]);
       form.reset();
-    } catch (error) {
-      //for pro model
-      console.log(error);
+    } catch (error: any) {
+      if (error?.response?.status === 403) {
+        proModal.onOpen();
+      }
     } finally {
       router.refresh();
     }

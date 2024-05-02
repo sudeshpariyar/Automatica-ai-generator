@@ -13,9 +13,12 @@ import Heading from "@/components/Heading";
 import Empty from "@/components/empty";
 import Loader from "@/components/loader";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { useProModal } from "@/hooks/useProModal";
 
 const MusicPage = () => {
   const router = useRouter();
+  const proModal = useProModal();
+
   const [music, setMusic] = useState<string>();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -31,9 +34,10 @@ const MusicPage = () => {
       const response = await axios.post("/api/music", values);
       setMusic(response.data);
       form.reset();
-    } catch (error) {
-      //for pro model
-      console.log(error);
+    } catch (error: any) {
+      if (error?.response?.status === 403) {
+        proModal.onOpen();
+      }
     } finally {
       router.refresh();
     }
