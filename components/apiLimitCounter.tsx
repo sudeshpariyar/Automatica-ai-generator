@@ -9,9 +9,13 @@ import { useProModal } from "@/hooks/useProModal";
 
 interface ApiLimitCounterProps {
   apiLimitCount: number;
+  isPro: boolean;
 }
 
-const ApiLimitCounter = ({ apiLimitCount = 0 }: ApiLimitCounterProps) => {
+const ApiLimitCounter = ({
+  apiLimitCount = 0,
+  isPro = false,
+}: ApiLimitCounterProps) => {
   const [mounted, setMounted] = useState(false);
   const proModal = useProModal();
 
@@ -20,6 +24,9 @@ const ApiLimitCounter = ({ apiLimitCount = 0 }: ApiLimitCounterProps) => {
   }, []);
 
   if (!mounted) {
+    return null;
+  }
+  if (isPro) {
     return null;
   }
   return (
